@@ -11,6 +11,10 @@
     <link href="libs/remark-css/robot-fonts.css" rel="stylesheet" />
     <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
     <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
     <script src="libs/js-cookie/js.cookie.js"></script>
     <script src="libs/peerjs/peerjs.min.js"></script>
     <script src="libs/tiny.toast/toast.min.js"></script>
@@ -20,7 +24,6 @@
     <link href="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
     <script src="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
     <script>window.xaringanExtraClipboard(null, {"button":"<i>Copy<\/i>","success":"<i class=\"fa fa-check\" style=\"color: #90BE6D\"><\/i>","error":"<i class=\"fa fa-times-circle\" style=\"color: #F94144\"><\/i>"})</script>
-    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
     <script src="libs/kePrint/kePrint.js"></script>
     <link href="libs/lightable/lightable.css" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" type="text/css" />
@@ -94,13 +97,18 @@ class: middle, center, inverse
 
 # Not covered today
 
-- Data importation
+--
+
+- Data importation, manipulation and transformation
+  - `data.table` - https://rdatatable.gitlab.io/data.table/
+
   - `readr` - https://r4ds.had.co.nz/data-import.html
+
   - `readxl` - https://readxl.tidyverse.org/
 
-- Data manipulation and transformation
   - `dplyr`, `tidyr` - https://r4ds.had.co.nz/tidy-data.html
-  - `data.table` - https://rdatatable.gitlab.io/data.table/
+
+--
 
 - Data visualization theory
   - [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
@@ -379,7 +387,7 @@ Using a very wide aspect ratio reveals an interesting pattern.
 
 --
 
-**Sunspot cycles increase more rapidly than they decrease when the number of sunspots is higher.**
+Sunspot cycles &lt;b&gt;&lt;font color="#E15554"&gt;increase more rapidly&lt;/font&gt;&lt;/b&gt; &lt;b&gt;&lt;font color="#4D9DE0"&gt;than they decrease&lt;/font&gt;&lt;/b&gt; when the number of sunspots is higher.
 
 &lt;img src="index_files/figure-html/sunspot3-1.png" style="display: block; margin: auto;" /&gt;
 
@@ -701,6 +709,8 @@ remotes::install_github("allisonhorst/palmerpenguins")
 
 # The palmer penguins data
 
+Let's load the data into R.
+
 &lt;small&gt;
 
 ```r
@@ -1002,7 +1012,7 @@ ggplot(
 
 --
 
-**Can we improve furthermore?**
+**Can we improve the graph furthermore?**
 
 ---
 
@@ -1509,6 +1519,31 @@ ggplot(
 
 ---
 
+# Setting color manually
+
+This can also be done in one step **using a named vector** of colors.
+
+`c("Adelie" = "darkorange", "Chinstrap" = "purple", "Gentoo" = "#008b8b")`
+
+
+```r
+ggplot(
+  penguins,
+  aes(
+    x = bill_length_mm,
+    y = body_mass_g
+  )
+) +
+  geom_point(aes(color = species)) +
+  scale_color_manual(values = c(
+    "Adelie" = "darkorange",
+    "Chinstrap" = "purple",
+    "Gentoo" = "#008b8b"
+  ))
+```
+
+---
+
 background-image: url(https://github.com/EmilHvitfeldt/paletteer/blob/master/man/figures/logo.png?raw=true)
 background-size: 90px
 background-position: 90% 8%
@@ -1541,7 +1576,7 @@ ggplot(
 ]
 
 .pull-right[
-&lt;img src="index_files/figure-html/unnamed-chunk-25-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-26-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -1583,7 +1618,7 @@ ggplot(
 
 .pull-right[
 
-&lt;img src="index_files/figure-html/unnamed-chunk-26-1.svg" height="80%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-27-1.svg" height="80%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -1631,17 +1666,17 @@ ggplot(penguins, aes(x = bill_length_mm, y = body_mass_g)) +
 * geom_point(aes(size = body_mass_g))
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-27-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-28-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
 class: inverse, center, middle
 
-# Colours for colourblind readers
+# Color blindness
 
 &lt;center&gt;
     &lt;figure&gt;
-      &lt;img style="margin:0px auto;display:block" src="img/unsplash/ronald-cuyan-AJgFLjnmSs4-unsplash.jpg" alt="Someone with a basket on his shoulder. The basket contains what looks like plants of various colors." width = "450"/&gt;
+      &lt;img style="margin:0px auto;display:block" src="img/unsplash/ronald-cuyan-AJgFLjnmSs4-unsplash.jpg" alt="Someone with a basket on his shoulder. The basket contains what looks like plants of various colors." width = "550"/&gt;
     &lt;/figure&gt;
     &lt;figcaption&gt;Photo by &lt;a href="https://unsplash.com/@ronaldcuyan?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText"&gt;Ronald Cuyan&lt;/a&gt; on &lt;a href="https://unsplash.com/s/photos/color-blind?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText"&gt;Unsplash&lt;/a&gt;
     &lt;/figcaption&gt; 
@@ -1660,7 +1695,7 @@ class: inverse, center, middle
 &lt;small&gt;For non colorblind viewers, this plot looks perfectly fine.&lt;/small&gt;
 &lt;br&gt;
 
-&lt;img src="index_files/figure-html/unnamed-chunk-28-1.svg" width="90%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-29-1.svg" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 --
@@ -1669,7 +1704,7 @@ class: inverse, center, middle
 
 &lt;small&gt;However, for some colorblind viewers, the &lt;orange&gt;&lt;b&gt;orange&lt;/b&gt;&lt;/orange&gt; and the &lt;green&gt;&lt;b&gt;green&lt;/b&gt;&lt;/green&gt; colors are hardly distinguishable.&lt;/small&gt;
 
-&lt;img src="index_files/figure-html/unnamed-chunk-29-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-30-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -1696,7 +1731,7 @@ p &lt;- ggplot(
 ]
 
 .pull-right[
-&lt;img src="index_files/figure-html/unnamed-chunk-31-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-32-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -1713,13 +1748,13 @@ package.
 colorblindr::cvd_grid(p)
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-32-1.svg" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-33-1.svg" width="60%" style="display: block; margin: auto;" /&gt;
 
 ---
 
 # Colours for colourblind readers
 
-There are many palettes that are colorblind-friendly.
+There are many palettes to choose from that are colorblind-friendly.
 
 .pull-left[
 
@@ -1740,7 +1775,7 @@ p &lt;- ggplot(
 ]
 
 .pull-right[
-&lt;img src="index_files/figure-html/unnamed-chunk-34-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-35-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -1754,17 +1789,25 @@ This time, colors are more easily distinguishable.
 colorblindr::cvd_grid(p)
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-35-1.svg" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-36-1.svg" width="60%" style="display: block; margin: auto;" /&gt;
 
 ---
 
 class: inverse, center, middle
 
-# Axes and titles
+# Titles
+
+&lt;center&gt;
+    &lt;figure&gt;
+      &lt;img style="margin:0px auto;display:block" src="img/unsplash/clem-onojeghuo-0PPKxWtYh0g-unsplash.jpg" alt="Old books placed vertically on a shelf." width = "550"/&gt;
+    &lt;/figure&gt;
+    &lt;figcaption&gt;Photo by &lt;a href="https://unsplash.com/@clemono?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText"&gt;Clem Onojeghuo&lt;/a&gt; on &lt;a href="https://unsplash.com/s/photos/library-title?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText"&gt;Unsplash&lt;/a&gt;
+    &lt;/figcaption&gt; 
+&lt;/center&gt;
 
 ---
 
-# Axes and titles
+# Titles
 
 There are many ways to change the titles of the graphic and the axes. Here we are going to use the `labs()` function. 
 
@@ -2002,7 +2045,7 @@ class: inverse, center, middle
 
 Faceting is a technique that allows displaying additional categorical variables in facets. Within `ggplot2`, there are two types of faceting: `facet_grid()` and `facet_wrap()`.
 
-&lt;img src="index_files/figure-html/unnamed-chunk-36-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-37-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -2958,13 +3001,13 @@ library(patchwork)
 
 # Plot #1
 
-&lt;img src="index_files/figure-html/unnamed-chunk-39-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-40-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
 # Plot #2
 
-&lt;img src="index_files/figure-html/unnamed-chunk-40-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-41-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -2977,7 +3020,7 @@ Combining horizontally is done using the `+` operator.
 p1 + p2
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-41-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-42-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -2990,7 +3033,7 @@ Combining vertically is done using the `/` operator.
 p1 / p2
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-42-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-43-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -3001,7 +3044,7 @@ p1 / p2
 (p1 + p2) / p1
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-43-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-44-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -3100,6 +3143,14 @@ ggsave("path/to/myfile.png", p, width = 5.97, height = 4.79, dpi = 300)
 class: inverse, center, middle
 
 # Geospatial data
+
+&lt;center&gt;
+    &lt;figure&gt;
+      &lt;img style="margin:0px auto;display:block" src="img/unsplash/kyle-glenn-nXt5HtLmlgE-unsplash.jpg" alt="Earth globe palced on a table." width = "550"/&gt;
+    &lt;/figure&gt;
+    &lt;figcaption&gt;Photo by &lt;a href="https://unsplash.com/@kylejglenn?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText"&gt;Kyle Glenn&lt;/a&gt; on &lt;a href="https://unsplash.com/s/photos/geography?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText"&gt;Unsplash&lt;/a&gt;
+    &lt;/figcaption&gt; 
+&lt;/center&gt;
 
 ---
 
@@ -3201,7 +3252,7 @@ We can plot the geographic information contained in `germany` using the `st_geom
 plot(st_geometry(germany))
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-50-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-51-1.png" width="30%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -3220,12 +3271,14 @@ railroads &lt;- ne_download(
   )
 ```
 
-At this time, we have the railroad for the entire planet. Since we only need information for Germany, we will crop it.
+--
+
+At this time, we have the railroad for the entire planet. Since we only need information for Germany, we will crop it using the `st_intersection()` function for the `sf` package.
 
 
 ```r
-railroads &lt;- railroads %&gt;%
-  st_intersection(germany) # Croping the railroad to Germany
+# Keep only the railroads that cross Germany
+railroads &lt;- st_intersection(railroads, germany)
 ```
 
 ---
@@ -3276,7 +3329,7 @@ ggplot() +
 &lt;/small&gt;
 
 .pull-right[
-&lt;img src="index_files/figure-html/unnamed-chunk-52-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-53-1.png" width="70%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---

@@ -150,13 +150,18 @@ class: middle, center, inverse
 
 # Not covered today
 
-- Data importation
+--
+
+- Data importation, manipulation and transformation
+  - `data.table` - https://rdatatable.gitlab.io/data.table/
+
   - `readr` - https://r4ds.had.co.nz/data-import.html
+
   - `readxl` - https://readxl.tidyverse.org/
 
-- Data manipulation and transformation
   - `dplyr`, `tidyr` - https://r4ds.had.co.nz/tidy-data.html
-  - `data.table` - https://rdatatable.gitlab.io/data.table/
+
+--
 
 - Data visualization theory
   - [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
@@ -214,21 +219,21 @@ raw_data <- curl::curl_fetch_memory(file)
 
 sea_ice_extent <- rawToChar(raw_data$content)
 
-sea_ice_extent <- sea_ice_extent %>%
+sea_ice_extent <- sea_ice_extent |>
   read_csv(
     skip = 2,
     col_names = c("year", "month", "day", "extent", "missing", "source")
-  ) %>%
-  dplyr::select(year:extent) %>%
-  mutate(month = parse_number(month)) %>%
-  mutate(month2 = month.name[month]) %>%
+  ) |>
+  dplyr::select(year:extent) |>
+  mutate(month = parse_number(month)) |>
+  mutate(month2 = month.name[month]) |>
   mutate(month2 = factor(month2, month.name))
 
-sea_ice_extent %>%
-  head(10) %>%
-  transmute(date = lubridate::make_date(year, month, day), extent) %>%
-  knitr::kable(caption = "Sea ice extent in the Arctic between 1978 and 2021.") %>%
-  kableExtra::kable_styling(font_size = 18, full_width = TRUE) %>%
+sea_ice_extent |>
+  head(10) |>
+  transmute(date = lubridate::make_date(year, month, day), extent) |>
+  knitr::kable(caption = "Sea ice extent in the Arctic between 1978 and 2021.") |>
+  kableExtra::kable_styling(font_size = 18, full_width = TRUE) |>
   kableExtra::column_spec(column = 1:2, width = "3in")
 ```
 ]
@@ -251,9 +256,9 @@ Graphics, on the other hand, can help to convey your message.
 
 ```{r, echo = FALSE, fig.width = 10, fig.height=6, out.width="70%"}
 
-sea_ice_extent %>%
-  group_by(month2, year) %>%
-  summarise(extent = mean(extent)) %>%
+sea_ice_extent |>
+  group_by(month2, year) |>
+  summarise(extent = mean(extent)) |>
   ggplot(aes(x = year, y = extent)) +
   geom_point(color = "#5c5c5c", size = 2) +
   facet_wrap(~month2, scales = "free_y") +
@@ -284,14 +289,14 @@ sea_ice_extent %>%
 The same data but presented differently.
 
 ```{r, echo = FALSE}
-df_viz <- sea_ice_extent %>%
-  mutate(date = lubridate::make_date("2020", month, day)) %>% 
+df_viz <- sea_ice_extent |>
+  mutate(date = lubridate::make_date("2020", month, day)) |> 
   filter(year <= 2021)
 
-sea_ice_extent_2021 <- df_viz %>%
+sea_ice_extent_2021 <- df_viz |>
   filter(year == 2021)
 
-df_viz %>%
+df_viz |>
   ggplot(aes(x = date, y = extent, group = year)) +
   geom_line(size = 0.25, color = "gray85") +
   geom_line(data = sea_ice_extent_2021, aes(color = "2021"), size = 0.5) +
@@ -330,7 +335,7 @@ Interesting reading: [Arctic Sea Ice Extent Second Highest in 18 Years at the en
 # renv::install("lockedata/datasauRus")
 library(datasauRus)
 
-datasaurus_dozen %>%
+datasaurus_dozen |>
   ggplot(aes(x, y)) +
   geom_point(aes(color = dataset), show.legend = FALSE) +
   facet_wrap(~dataset, ncol = 5) +
@@ -513,7 +518,7 @@ pa + pb + pc +
 On the following graph, we can observe what seems to be a solar cycle of sunspot activity repeated every 11-13 years.
 
 ```{r sunspot1, echo=FALSE}
-df <- timetk::tk_tbl(sunspot.year) %>% 
+df <- timetk::tk_tbl(sunspot.year) |> 
   rename(year = index, sunspot = value)
 
 m <- ggplot(df, aes(x = year, y = sunspot)) +
@@ -544,20 +549,20 @@ m2
 
 --
 
-**Sunspot cycles increase more rapidly than they decrease when the number of sunspots is higher.**
+Sunspot cycles <b><font color="#E15554">increase more rapidly</font></b> <b><font color="#4D9DE0">than they decrease</font></b> when the number of sunspots is higher.
 
 ```{r sunspot3, echo=FALSE, crop = TRUE, dev='ragg_png', dpi=300}
 # Highlight sunspot increase and decrease segments on the graph
 
-sunspot_high <- df %>% 
-  filter(between(year, 1784, 1798)) %>% 
+sunspot_high <- df |> 
+  filter(between(year, 1784, 1798)) |> 
   mutate(orientation = case_when(
     year <= 1787 ~ "Rising",
     TRUE ~ "Faling"
   ))
 
-sunspot_low <- df %>% 
-  filter(between(year, 1878, 1890)) %>% 
+sunspot_low <- df |> 
+  filter(between(year, 1878, 1890)) |> 
   mutate(orientation = case_when(
     year < 1883 ~ "Rising",
     TRUE ~ "Faling"
@@ -577,12 +582,14 @@ ggplot(df, aes(x = year, y = sunspot)) +
     data = sunspot_low,
     aes(x = year, y = sunspot, color = orientation)
   ) +
+  scale_color_manual(
+    values = c("Rising" = "#E15554", "Faling" = "#4D9DE0")
+  ) +
   coord_fixed(ratio = ratio) +
   theme(text = element_text(size = 6)) +
   theme(
     legend.position = "none"
   )
-
 ```
 
 --
@@ -596,17 +603,17 @@ Although we can see the different types of cycles better, the graph looks too st
 **A better option consists to split the data into subsets.** Here, each panel presents the data for a specific century.
 
 ```{r sunspot4, echo=FALSE, crop = TRUE, dev='ragg_png', dpi=300, fig.width=8, fig.height=8, out.width="50%"}
-df_viz <- df %>%
+df_viz <- df |>
   mutate(century = year %/% 100 * 100)
 
-tmp <- df_viz %>% 
+tmp <- df_viz |> 
   filter(century == 1700)
 
 ratio <- ggthemes:::bank_slopes(tmp$year, tmp$sunspot)
 
 make_plot <- function(df, century, ratio) {
-  df %>%
-    filter(century == {{ century }}) %>%
+  df |>
+    filter(century == {{ century }}) |>
     ggplot(aes(x = year, y = sunspot)) +
     geom_line() +
     scale_x_continuous(limits = c(century, century + 100)) +
@@ -645,7 +652,7 @@ df <-
     salary = c(55000, 58000)
   )
 
-p1 <- df %>%
+p1 <- df |>
   ggplot(aes(x = employee, y = salary)) +
   geom_col() +
   scale_y_continuous(
@@ -705,7 +712,7 @@ p1 + p2 +
 
 ```{r echo=FALSE, fig.width=9, fig.height=4, out.width="70%"}
 df <- tibble(x = 0:10, y = 2^x)
-p1 <- df %>% 
+p1 <- df |> 
   ggplot(aes(x = x, y = y)) +
   geom_line() +
   geom_point()
@@ -985,6 +992,8 @@ remotes::install_github("allisonhorst/palmerpenguins")
 
 # The palmer penguins data
 
+Let's load the data into R.
+
 <small>
 ```{r}
 library(palmerpenguins)
@@ -1085,7 +1094,7 @@ There are several types of charts with two variables. Here are the most used.
 We used `geom_bar()` to visualize the number/count of cases for each value of `x`. If we want to represent values in the data (`y`), we can use `geom_col()`. For this example, I will use the `starwars` data that is included in the `dplyr` package. **This graph shows the top 20 tallest characters (in cm).**
 
 ```{r, echo=FALSE}
-sw <- starwars %>% 
+sw <- starwars |> 
   slice_max(height, n =  20)
 ```
 
@@ -1141,7 +1150,7 @@ ggplot(
 
 --
 
-**Can we improve furthermore?**
+**Can we improve the graph furthermore?**
 
 ---
 
@@ -1392,6 +1401,30 @@ ggplot(
 
 ---
 
+# Setting color manually
+
+This can also be done in one step **using a named vector** of colors.
+
+`c("Adelie" = "darkorange", "Chinstrap" = "purple", "Gentoo" = "#008b8b")`
+
+```{r, eval=FALSE}
+ggplot(
+  penguins,
+  aes(
+    x = bill_length_mm,
+    y = body_mass_g
+  )
+) +
+  geom_point(aes(color = species)) +
+  scale_color_manual(values = c(
+    "Adelie" = "darkorange",
+    "Chinstrap" = "purple",
+    "Gentoo" = "#008b8b"
+  ))
+```
+
+---
+
 background-image: url(https://github.com/EmilHvitfeldt/paletteer/blob/master/man/figures/logo.png?raw=true)
 background-size: 90px
 background-position: 90% 8%
@@ -1514,11 +1547,11 @@ ggplot(penguins, aes(x = bill_length_mm, y = body_mass_g)) +
 
 class: inverse, center, middle
 
-# Colours for colourblind readers
+# Color blindness
 
 <center>
     <figure>
-      <img style="margin:0px auto;display:block" src="img/unsplash/ronald-cuyan-AJgFLjnmSs4-unsplash.jpg" alt="Someone with a basket on his shoulder. The basket contains what looks like plants of various colors." width = "450"/>
+      <img style="margin:0px auto;display:block" src="img/unsplash/ronald-cuyan-AJgFLjnmSs4-unsplash.jpg" alt="Someone with a basket on his shoulder. The basket contains what looks like plants of various colors." width = "550"/>
     </figure>
     <figcaption>Photo by <a href="https://unsplash.com/@ronaldcuyan?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Ronald Cuyan</a> on <a href="https://unsplash.com/s/photos/color-blind?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
     </figcaption> 
@@ -1543,7 +1576,7 @@ df <- tibble(
   y = c(0.25, 0.60, 0.15)
 )
 
-p <- df %>% 
+p <- df |> 
   ggplot(aes(x = x, y = y, fill = x)) +
   geom_col() +
   scale_fill_manual(
@@ -1614,7 +1647,7 @@ colorblindr::cvd_grid(p)
 
 # Colours for colourblind readers
 
-There are many palettes that are colorblind-friendly.
+There are many palettes to choose from that are colorblind-friendly.
 
 .pull-left[
 
@@ -1653,11 +1686,19 @@ colorblindr::cvd_grid(p)
 
 class: inverse, center, middle
 
-# Axes and titles
+# Titles
+
+<center>
+    <figure>
+      <img style="margin:0px auto;display:block" src="img/unsplash/clem-onojeghuo-0PPKxWtYh0g-unsplash.jpg" alt="Old books placed vertically on a shelf." width = "550"/>
+    </figure>
+    <figcaption>Photo by <a href="https://unsplash.com/@clemono?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Clem Onojeghuo</a> on <a href="https://unsplash.com/s/photos/library-title?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+    </figcaption> 
+</center>
 
 ---
 
-# Axes and titles
+# Titles
 
 There are many ways to change the titles of the graphic and the axes. Here we are going to use the `labs()` function. 
 
@@ -1728,8 +1769,8 @@ class: inverse, center, middle
 Faceting is a technique that allows displaying additional categorical variables in facets. Within `ggplot2`, there are two types of faceting: `facet_grid()` and `facet_wrap()`.
 
 ```{r, echo = FALSE, fig.width=10, fig.height=4}
-penguins %>%
-  drop_na(sex) %>%
+penguins |>
+  drop_na(sex) |>
   ggplot(aes(
     x = body_mass_g,
     y = bill_depth_mm,
@@ -1985,8 +2026,8 @@ library(patchwork)
 # Plot #1
 
 ```{r, echo = FALSE}
-p1 <- penguins %>%
-  mutate(bill_ratio = bill_length_mm / bill_depth_mm) %>%
+p1 <- penguins |>
+  mutate(bill_ratio = bill_length_mm / bill_depth_mm) |>
   ggplot(aes(x = body_mass_g, y = species, fill = species)) +
   ggridges::geom_density_ridges(
     rel_min_height = 0.0005,
@@ -2022,17 +2063,17 @@ p1
 # Plot #2
 
 ```{r, echo = FALSE}
-df <- penguins_raw %>% 
-  janitor::clean_names() %>% 
-  select(date_egg) %>% 
+df <- penguins_raw |> 
+  janitor::clean_names() |> 
+  select(date_egg) |> 
   bind_cols(penguins)
 
-p2 <- df %>% 
-  separate(date_egg, into = c("year", "month", "day"), convert = TRUE) %>% 
-  filter(month == 11) %>% 
-  count(day, species) %>% 
-  group_by(day) %>% 
-  mutate(n2 = n / sum(n)) %>% 
+p2 <- df |> 
+  separate(date_egg, into = c("year", "month", "day"), convert = TRUE) |> 
+  filter(month == 11) |> 
+  count(day, species) |> 
+  group_by(day) |> 
+  mutate(n2 = n / sum(n)) |> 
   ggplot(aes(x = day, y = n2, fill = species)) +
   geom_col() +
   scale_fill_manual(
@@ -2184,6 +2225,14 @@ class: inverse, center, middle
 
 # Geospatial data
 
+<center>
+    <figure>
+      <img style="margin:0px auto;display:block" src="img/unsplash/kyle-glenn-nXt5HtLmlgE-unsplash.jpg" alt="Earth globe palced on a table." width = "550"/>
+    </figure>
+    <figcaption>Photo by <a href="https://unsplash.com/@kylejglenn?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Kyle Glenn</a> on <a href="https://unsplash.com/s/photos/geography?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+    </figcaption> 
+</center>
+
 ---
 
 It is also possible to visualize geospatial data with `ggplot2`.
@@ -2242,7 +2291,7 @@ germany
 
 <small>
 ```{r, echo=FALSE}
-germany %>% 
+germany |> 
   select(sovereignt)
 ```
 </small>
@@ -2286,11 +2335,13 @@ railroads <- ne_download(
   )
 ```
 
-At this time, we have the railroad for the entire planet. Since we only need information for Germany, we will crop it.
+--
+
+At this time, we have the railroad for the entire planet. Since we only need information for Germany, we will crop it using the `st_intersection()` function for the `sf` package.
 
 ```{r railroads_sf_crop, echo=TRUE, cache=TRUE, results='hide'}
-railroads <- railroads %>%
-  st_intersection(germany) # Croping the railroad to Germany
+# Keep only the railroads that cross Germany
+railroads <- st_intersection(railroads, germany)
 ```
 
 ---
@@ -2299,8 +2350,8 @@ railroads <- railroads %>%
 
 <small>
 ```{r, echo=FALSE}
-railroads %>% 
-  select(1:4) %>% 
+railroads |> 
+  select(1:4) |> 
   head(6)
 ```
 </small>
