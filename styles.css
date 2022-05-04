@@ -257,3 +257,10 @@ h2 {
   color: #FAFAFA;*/
   font-family: "Baloo", sans-serif;
 }
+
+
+.partial,
+.partial h1 {
+ color: #ffffff;
+ background-color:#394457
+}

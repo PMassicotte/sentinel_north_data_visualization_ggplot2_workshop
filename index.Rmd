@@ -329,6 +329,40 @@ Interesting reading: [Arctic Sea Ice Extent Second Highest in 18 Years at the en
 
 ---
 
+# Visualization to convey your message
+
+```{r, sie-rect-plot, echo = FALSE, fig.height=5, fig.width=6}
+sea_ice_extent |> 
+  filter(between(year, 1979, 2021)) |> 
+  group_by(year, month2) |> 
+  summarise(mean_extent = mean(extent, na.rm = TRUE)) |> 
+  ungroup() |> 
+  ggplot(aes(x = year, y = month2, fill = mean_extent)) +
+  geom_raster(interpolate = FALSE) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0)) +
+  scale_fill_viridis_c(
+    option = "A",
+    direction = -1,
+    guide = guide_colorbar(
+      title = parse(text = "Sea~ice~extent ~ (km^2 %*% 10^6)"),
+      title.position = "top",
+      title.hjust = 0.5,
+      barwidth = unit(10, "cm"),
+      barheight = unit(0.3, "cm")
+    )
+  ) +
+  labs(
+    x = NULL,
+    y = NULL
+  ) +
+  theme(
+    legend.position = "top"
+  )
+```
+
+---
+
 # Datasaurus Dozen
 
 ```{r, echo = FALSE}
@@ -703,7 +737,7 @@ p1 + p2 +
 
 ---
 
-# Improper axe scaling
+# Improper axe scale labeling
 
 - There is nothing wrong to use a logarithm scaling (I do it very often), but be careful to annotate the axis adequately, so the viewer is aware of it.
   - **If not clearly specified, the user may assume that the data is presented on a linear scale.**
@@ -760,6 +794,73 @@ p1 <- p2 +
 p1 + p2 +
   plot_annotation(tag_level = "A") &
   theme(plot.tag = element_text(face = "bold"))
+```
+
+---
+class: partial
+
+# Sometimes rules are made to be broken
+
+```{r, echo = FALSE, fig.width=8, fig.height=5}
+
+years <-
+  seq(min(sea_ice_extent$year) + 1, max(sea_ice_extent$year) - 1, len = 4) |>
+  floor()
+
+df_annotation <- sea_ice_extent |> 
+  filter(year == 1979) |> 
+  filter(extent == max(extent)) |> 
+  mutate(date = as.Date(paste(2000, month, day, sep = "-"))) |> 
+  mutate(label = glue::glue("All time maximum")) |> 
+  mutate(description = glue::glue(str_wrap("All time maximum sea ice extent was reached in {month2} of {year}.")))
+
+sea_ice_extent |>
+  filter(year %in% years) |>
+  mutate(date = as.Date(paste(2000, month, day, sep = "-"))) |>
+  ggplot(aes(x = date, y = extent, color = factor(year))) +
+  geom_line(size = 1) +
+  ggforce::geom_mark_circle(
+    data = df_annotation,
+    aes(
+      x = date,
+      y = extent,
+      label = label,
+      description = description,
+      color = factor(year),
+    ),
+    label.buffer = unit(20, "mm"),
+    label.colour = "#FFCB27",
+    label.fill = "transparent",
+    con.colour = "#FFCB27",
+    expand = unit(2, "mm"),
+    show.legend = FALSE,
+    label.fontsize = c(11, 9),
+    label.family = c("Montserrat", "Exo"),
+    parse = TRUE
+  ) +
+  scale_x_date(date_labels = "%B") +
+  scale_color_manual(
+    values = c("#FFCB27", "#9e82a1", "#E3395A", "#43AFB0")
+  ) +
+  labs(
+    x = NULL,
+    y = quote("Sea ice extent" ~ (km^2 %*% 10^6)),
+    color = NULL,
+    title = "Arctic sea ice extent"
+  ) +
+  theme(
+    panel.grid = element_line(color = "#8b9da5"),
+    panel.background = element_rect(fill = "#394457"),
+    panel.border = element_blank(),
+    plot.background = element_rect(fill = "#394457", color = NA),
+    plot.title = element_text(color = "#8b9da5"),
+    axis.title = element_text(color = "#8b9da5"),
+    axis.text = element_text(color = "#8b9da5"),
+    legend.key = element_rect(fill = "#394457"),
+    legend.background = element_rect(fill = "#394457"),
+    legend.position = "bottom",
+    legend.text = element_text(color = "white")
+  )
 ```
 
 ---
