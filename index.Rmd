@@ -52,6 +52,7 @@ library(palmerpenguins)
 library(sf)
 library(rnaturalearth)
 library(ragg)
+library(ggtext)
 
 theme_set(theme_light_modified(base_family = "Montserrat"))
 
@@ -341,8 +342,8 @@ sea_ice_extent |>
   geom_raster(interpolate = FALSE) +
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0)) +
-  scale_fill_viridis_c(
-    option = "A",
+  paletteer::scale_fill_paletteer_c(
+    "grDevices::Blues 3",
     direction = -1,
     guide = guide_colorbar(
       title = parse(text = "Sea~ice~extent ~ (km^2 %*% 10^6)"),
@@ -802,20 +803,21 @@ class: partial
 # Sometimes rules are made to be broken
 
 ```{r, echo = FALSE, fig.width=8, fig.height=5}
+df <- sea_ice_extent |>
+  mutate(across(extent, .fns = list(minimum = min, maximum = max))) |> 
+  group_by(year) |> 
+  filter(any(extent == extent_minimum | extent == extent_maximum)) |> 
+  ungroup()
 
-years <-
-  seq(min(sea_ice_extent$year) + 1, max(sea_ice_extent$year) - 1, len = 4) |>
-  floor()
-
-df_annotation <- sea_ice_extent |> 
-  filter(year == 1979) |> 
-  filter(extent == max(extent)) |> 
+df_annotation <- df |> 
+  pivot_longer(contains("extent_")) |> 
+  filter(extent == value) |> 
   mutate(date = as.Date(paste(2000, month, day, sep = "-"))) |> 
-  mutate(label = glue::glue("All time maximum")) |> 
-  mutate(description = glue::glue(str_wrap("All time maximum sea ice extent was reached in {month2} of {year}.")))
-
-sea_ice_extent |>
-  filter(year %in% years) |>
+  mutate(name = str_remove(name, "extent_")) |> 
+  mutate(label = glue::glue("All time {name}")) |> 
+  mutate(description = glue::glue(str_wrap("All time {name} sea ice extent was reached in {month2} of {year}.")))
+  
+df |>
   mutate(date = as.Date(paste(2000, month, day, sep = "-"))) |>
   ggplot(aes(x = date, y = extent, color = factor(year))) +
   geom_line(size = 1) +
@@ -826,41 +828,48 @@ sea_ice_extent |>
       y = extent,
       label = label,
       description = description,
-      color = factor(year),
+      color = factor(year)
     ),
-    label.buffer = unit(20, "mm"),
-    label.colour = "#FFCB27",
+    label.buffer = unit(30, "mm"),
+    label.colour = "#d0d3d8",
     label.fill = "transparent",
-    con.colour = "#FFCB27",
+    con.colour = "#d0d3d8",
+    size = 1,
+    con.size = 0.2,
     expand = unit(2, "mm"),
     show.legend = FALSE,
     label.fontsize = c(11, 9),
-    label.family = c("Montserrat", "Exo"),
-    parse = TRUE
+    label.family = c("Montserrat", "Exo")
   ) +
   scale_x_date(date_labels = "%B") +
-  scale_color_manual(
-    values = c("#FFCB27", "#9e82a1", "#E3395A", "#43AFB0")
-  ) +
+  scale_color_manual(values = c("#FFCB27", "#E3395A")) +
   labs(
     x = NULL,
     y = quote("Sea ice extent" ~ (km^2 %*% 10^6)),
     color = NULL,
-    title = "Arctic sea ice extent"
+    title = "Arctic sea ice extent",
+    subtitle = "<span style='color:#FFCB27'>1979</span> and <span style='color:#E3395A'>2012</span> were the most contrasted years in terms of sea ice extent in the Arctic"
   ) +
   theme(
-    panel.grid = element_line(color = "#8b9da5"),
+    panel.grid = element_line(color = "#525966"),
     panel.background = element_rect(fill = "#394457"),
     panel.border = element_blank(),
     plot.background = element_rect(fill = "#394457", color = NA),
-    plot.title = element_text(color = "#8b9da5"),
-    axis.title = element_text(color = "#8b9da5"),
-    axis.text = element_text(color = "#8b9da5"),
+    plot.title = element_text(color = "#d0d3d8"),
+    plot.subtitle = element_markdown(
+      color = "#d0d3d8",
+      family = "Baloo 2",
+      size = 14
+    ),
+    axis.title = element_text(color = "#d0d3d8"),
+    axis.text = element_text(color = "#d0d3d8"),
     legend.key = element_rect(fill = "#394457"),
-    legend.background = element_rect(fill = "#394457"),
-    legend.position = "bottom",
-    legend.text = element_text(color = "white")
+    # legend.background = element_rect(fill = "#394457"),
+    # legend.position = "bottom",
+    # legend.text = element_text(color = "#d0d3d8"),
+    legend.position = "none"
   )
+
 ```
 
 ---
@@ -1102,6 +1111,8 @@ penguins
 ```
 </small>
 
+**Note that the `ggplot2` works best when using data frames.**
+
 ---
 
 # Understanding the ggplot2 syntax
@@ -1109,7 +1120,7 @@ penguins
 A `ggplot2` plot is built layer by layer by using the `+` operator. 
 
 <center>
-    <img src="img/ggplot2_structure.png" alt="drawing" width="800"/>
+    <img src="img/ggplot2_structure.png" alt="drawing" width="1000"/>
 </center>
 <figcaption>
     The basic structure of a ggplot2 plot.
