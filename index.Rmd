@@ -45,6 +45,8 @@ options(htmltools.dir.version = FALSE, warn = -1)
 # renv::install("ropensci/rnaturalearthdata")
 # renv::install("ropensci/rnaturalearthhires")
 # renv::install("clauswilke/colorblindr")
+# renv::install("rgdal")
+# renv::install("magick")
 
 library(tidyverse)
 library(ggpmthemes)
