@@ -1,15 +1,11 @@
-Some ideas for the data visualization workshop at Sentinel North
 
-## Sections
+# Data visualization workshop using ggplot2
 
-- Sections to learn people practice after each of the main concept.
-- Sections about pimping up graphs for posters and presentations.
-- Data-ink ratio
+<!-- badges: start -->
+<!-- badges: end -->
 
-Ressources:
+This data visualization workwhop using `ggplot2` was presented to the [Sentinel North community](https://sentinellenord.ulaval.ca/en/about-us).
 
-- https://en.m.wikipedia.org/wiki/Misleading_graph
-- Chart junk https://en.wikipedia.org/wiki/Chartjunk
-- https://www.forbes.com/sites/naomirobbins/2012/02/16/misleading-graphs-figures-not-drawn-to-scale/?sh=57c2b2c615ef
+## Code of Conduct
 
-
+Please note that the sentinel_north_data_visualization_ggplot2_workshop project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
