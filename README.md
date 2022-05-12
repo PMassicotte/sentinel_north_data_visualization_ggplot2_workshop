@@ -2,6 +2,7 @@
 # Data visualization workshop using ggplot2
 
 <!-- badges: start -->
+[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 <!-- badges: end -->
 
 This data visualization workwhop using `ggplot2` was presented to the [Sentinel North community](https://sentinellenord.ulaval.ca/en/about-us).
