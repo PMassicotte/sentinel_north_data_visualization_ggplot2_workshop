@@ -37,6 +37,9 @@ options(htmltools.dir.version = FALSE, warn = -1)
 
 # names(xaringan:::list_css())
 
+# renv::install("MilesMcBain/breakerofchains")
+# renv::install("mcguinlu/pathformatr")
+# renv::install("pmassicotte/ggpmthemes")
 # renv::install("rstudio/fontawesome")
 # renv::install("gadenbuie/xaringanExtra")
 # renv::install("ropensci/rnaturalearthdata")
