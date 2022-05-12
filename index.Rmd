@@ -208,6 +208,33 @@ class: middle, center, inverse
 
 ---
 
+# Datasaurus Dozen
+
+```{r, echo = FALSE}
+# renv::install("lockedata/datasauRus")
+library(datasauRus)
+
+datasaurus_dozen |>
+  ggplot(aes(x, y)) +
+  geom_point(aes(color = dataset), show.legend = FALSE) +
+  facet_wrap(~dataset, ncol = 5) +
+  labs(
+    x = NULL,
+    y = NULL
+  ) +
+  theme(
+    strip.background = element_blank(),
+    panel.border = element_blank(),
+    axis.ticks = element_blank()
+  )
+```
+
+--
+
+**These 13 datasets have the same statistical properties (*mean*, *variance*, *correlation*).** However, they look quite different!
+
+---
+
 # Visualization to convey your message
 
 It can be difficult to grasp the information contained in a table.
@@ -257,7 +284,7 @@ Graphics, on the other hand, can help to convey your message.
 
 ```{r, echo = FALSE, fig.width = 10, fig.height=6, out.width="70%"}
 
-sea_ice_extent |>
+p1 <- sea_ice_extent |>
   group_by(month2, year) |>
   summarise(extent = mean(extent)) |>
   ggplot(aes(x = year, y = extent)) +
@@ -281,6 +308,8 @@ sea_ice_extent |>
     strip.text = element_text(face = "bold", size = 14, hjust = 0),
     axis.ticks = element_blank()
   )
+
+p1
 ```
 
 ---
@@ -291,13 +320,13 @@ The same data but presented differently.
 
 ```{r, echo = FALSE}
 df_viz <- sea_ice_extent |>
-  mutate(date = lubridate::make_date("2020", month, day)) |> 
+  mutate(date = lubridate::make_date("2020", month, day)) |>
   filter(year <= 2021)
 
 sea_ice_extent_2021 <- df_viz |>
   filter(year == 2021)
 
-df_viz |>
+p2 <- df_viz |>
   ggplot(aes(x = date, y = extent, group = year)) +
   geom_line(size = 0.25, color = "gray85") +
   geom_line(data = sea_ice_extent_2021, aes(color = "2021"), size = 0.5) +
@@ -324,6 +353,8 @@ df_viz |>
     legend.justification = c(0, 0),
     legend.position = c(0.1, 0.1)
   )
+
+p2
 ```
 
 Interesting reading: [Arctic Sea Ice Extent Second Highest in 18 Years at the end of 2021](https://www.severe-weather.eu/global-weather/arctic-sea-ice-second-highest-18-years-end-2021-rrc/)
@@ -332,18 +363,20 @@ Interesting reading: [Arctic Sea Ice Extent Second Highest in 18 Years at the en
 
 # Visualization to convey your message
 
+The same data but presented differently.
+
 ```{r, sie-rect-plot, echo = FALSE, fig.height=5, fig.width=6}
-sea_ice_extent |> 
+p3 <- sea_ice_extent |> 
   filter(between(year, 1979, 2021)) |> 
   group_by(year, month2) |> 
   summarise(mean_extent = mean(extent, na.rm = TRUE)) |> 
   ungroup() |> 
   ggplot(aes(x = year, y = month2, fill = mean_extent)) +
-  geom_raster(interpolate = FALSE) +
+  geom_raster() +
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0)) +
   paletteer::scale_fill_paletteer_c(
-    "grDevices::Blues 3",
+    "viridis::inferno",
     direction = -1,
     guide = guide_colorbar(
       title = parse(text = "Sea~ice~extent ~ (km^2 %*% 10^6)"),
@@ -360,34 +393,9 @@ sea_ice_extent |>
   theme(
     legend.position = "top"
   )
+
+p3
 ```
-
----
-
-# Datasaurus Dozen
-
-```{r, echo = FALSE}
-# renv::install("lockedata/datasauRus")
-library(datasauRus)
-
-datasaurus_dozen |>
-  ggplot(aes(x, y)) +
-  geom_point(aes(color = dataset), show.legend = FALSE) +
-  facet_wrap(~dataset, ncol = 5) +
-  labs(
-    x = NULL,
-    y = NULL
-  ) +
-  theme(
-    strip.background = element_blank(),
-    panel.border = element_blank(),
-    axis.ticks = element_blank()
-  )
-```
-
---
-
-**These 13 datasets have the same statistical properties (*mean*, *variance*, *correlation*).** However, they look quite different!
 
 ---
 
@@ -676,7 +684,7 @@ p1 / p2 / p3
 
 # Truncated graphs
 
-- Truncated graphs can be very misleading because the *y-axis* does not start at 0.
+- Truncated graphs (**especially barplot**) can be very misleading because the *y-axis* does not start at 0.
 
 - The graph in **panel A** suggests that Olivier's salary  **is 10 times more** than Benjamin's.
 
@@ -816,8 +824,8 @@ df_annotation <- df |>
   mutate(name = str_remove(name, "extent_")) |> 
   mutate(label = glue::glue("All time {name}")) |> 
   mutate(description = glue::glue(str_wrap("All time {name} sea ice extent was reached in {month2} of {year}.")))
-  
-df |>
+
+p1 <- df |>
   mutate(date = as.Date(paste(2000, month, day, sep = "-"))) |>
   ggplot(aes(x = date, y = extent, color = factor(year))) +
   geom_line(size = 1) +
@@ -835,7 +843,7 @@ df |>
     label.fill = "transparent",
     con.colour = "#d0d3d8",
     size = 1,
-    con.size = 0.2,
+    con.size = 0.5,
     expand = unit(2, "mm"),
     show.legend = FALSE,
     label.fontsize = c(11, 9),
@@ -864,10 +872,55 @@ df |>
     axis.title = element_text(color = "#d0d3d8"),
     axis.text = element_text(color = "#d0d3d8"),
     legend.key = element_rect(fill = "#394457"),
-    # legend.background = element_rect(fill = "#394457"),
+    legend.background = element_rect(fill = "#394457"),
     # legend.position = "bottom",
     # legend.text = element_text(color = "#d0d3d8"),
     legend.position = "none"
+  )
+
+# Inset
+
+sie_high <-
+  st_read(
+    here::here(
+      "data",
+      "raw",
+      "seaice_extent",
+      "extent_N_197903_polygon_v3.0",
+      "extent_N_197903_polygon_v3.0.shp"
+    ),
+    quiet = TRUE
+  )
+
+sie_low <-
+  st_read(
+    here::here(
+      "data",
+      "raw",
+      "seaice_extent",
+      "extent_N_201209_polygon_v3.0",
+      "extent_N_201209_polygon_v3.0.shp"
+    ),
+    quiet = TRUE
+  )
+
+p2 <- ggplot() +
+  geom_sf(data = sie_high, fill = "#FFCB27", size = 0.1) +
+  geom_sf(data = sie_low, fill = "#E3395A", size = 0.1) +
+  coord_sf() +
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(),
+    panel.grid = element_blank(),
+    panel.border = element_blank(),
+    plot.background = element_blank()
+  )
+
+p1 +
+  inset_element(p2, 0.42, 0.1, 0.3, 0.4, align_to = "panel", clip = TRUE, ignore_tag = T) &
+  theme(
+    plot.background = element_rect(fill = "#394457", color = NA),
+    panel.background = element_blank()
   )
 
 ```
