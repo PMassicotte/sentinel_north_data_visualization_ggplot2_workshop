@@ -264,3 +264,6 @@ h2 {
  color: #ffffff;
  background-color:#394457
 }
+
+/* Used to display long vector with smaller font-size */
+.small { font-size: 70% }

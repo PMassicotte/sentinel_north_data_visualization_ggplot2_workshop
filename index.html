@@ -11,10 +11,6 @@
     <link href="libs/remark-css/robot-fonts.css" rel="stylesheet" />
     <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
     <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
-    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
-    <script src="libs/tile-view/tile-view.js"></script>
-    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
-    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
     <script src="libs/js-cookie/js.cookie.js"></script>
     <script src="libs/peerjs/peerjs.min.js"></script>
     <script src="libs/tiny.toast/toast.min.js"></script>
@@ -24,6 +20,7 @@
     <link href="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
     <script src="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
     <script>window.xaringanExtraClipboard(null, {"button":"<i>Copy<\/i>","success":"<i class=\"fa fa-check\" style=\"color: #90BE6D\"><\/i>","error":"<i class=\"fa fa-times-circle\" style=\"color: #F94144\"><\/i>"})</script>
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
     <script src="libs/kePrint/kePrint.js"></script>
     <link href="libs/lightable/lightable.css" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" type="text/css" />
@@ -50,7 +47,7 @@ class: title-slide, center, bottom
   &lt;img src="img/sn_logo.png" alt="Logo of Sentinel North. Shows a stars in the middle." width = "450"/&gt;
 &lt;/figure&gt;
 
-May 19, 2022 (updated: 2022-05-12)
+May 19, 2022 (updated: 2022-05-17)
 
 ## Philippe Massicotte
 
@@ -2391,7 +2388,7 @@ Many components can be changed using the `theme()` function. Today we are going 
 
 count: false
  
-# Built in themes
+# ggplot2 built-in themes
 .panel1-theme1-auto[
 
 ```r
@@ -2406,7 +2403,7 @@ count: false
 ---
 count: false
  
-# Built in themes
+# ggplot2 built-in themes
 .panel1-theme1-auto[
 
 ```r
@@ -2422,7 +2419,7 @@ p +
 ---
 count: false
  
-# Built in themes
+# ggplot2 built-in themes
 .panel1-theme1-auto[
 
 ```r
@@ -2439,7 +2436,7 @@ p +
 ---
 count: false
  
-# Built in themes
+# ggplot2 built-in themes
 .panel1-theme1-auto[
 
 ```r
@@ -2457,7 +2454,7 @@ p +
 ---
 count: false
  
-# Built in themes
+# ggplot2 built-in themes
 .panel1-theme1-auto[
 
 ```r
@@ -2476,7 +2473,7 @@ p +
 ---
 count: false
  
-# Built in themes
+# ggplot2 built-in themes
 .panel1-theme1-auto[
 
 ```r
@@ -2718,105 +2715,45 @@ p +
 
 ---
 
+# Modify specific components of a theme
 
-
-count: false
- 
-# Legend position
-.panel1-legend_position-auto[
 
 ```r
-*p 
+?theme() # Display all the modifiable components of a theme
 ```
-]
- 
-.panel2-legend_position-auto[
-&lt;img src="index_files/figure-html/legend_position_auto_01_output-1.svg" style="display: block; margin: auto;" /&gt;
+
+.small[
+
+```
+##  [1] "line"                       "rect"                       "text"                       "title"                     
+##  [5] "aspect.ratio"               "axis.title"                 "axis.title.x"               "axis.title.x.top"          
+##  [9] "axis.title.x.bottom"        "axis.title.y"               "axis.title.y.left"          "axis.title.y.right"        
+## [13] "axis.text"                  "axis.text.x"                "axis.text.x.top"            "axis.text.x.bottom"        
+## [17] "axis.text.y"                "axis.text.y.left"           "axis.text.y.right"          "axis.ticks"                
+## [21] "axis.ticks.x"               "axis.ticks.x.top"           "axis.ticks.x.bottom"        "axis.ticks.y"              
+## [25] "axis.ticks.y.left"          "axis.ticks.y.right"         "axis.ticks.length"          "axis.ticks.length.x"       
+## [29] "axis.ticks.length.x.top"    "axis.ticks.length.x.bottom" "axis.ticks.length.y"        "axis.ticks.length.y.left"  
+## [33] "axis.ticks.length.y.right"  "axis.line"                  "axis.line.x"                "axis.line.x.top"           
+## [37] "axis.line.x.bottom"         "axis.line.y"                "axis.line.y.left"           "axis.line.y.right"         
+## [41] "legend.background"          "legend.margin"              "legend.spacing"             "legend.spacing.x"          
+## [45] "legend.spacing.y"           "legend.key"                 "legend.key.size"            "legend.key.height"         
+## [49] "legend.key.width"           "legend.text"                "legend.text.align"          "legend.title"              
+## [53] "legend.title.align"         "legend.position"            "legend.direction"           "legend.justification"      
+## [57] "legend.box"                 "legend.box.just"            "legend.box.margin"          "legend.box.background"     
+## [61] "legend.box.spacing"         "panel.background"           "panel.border"               "panel.spacing"             
+## [65] "panel.spacing.x"            "panel.spacing.y"            "panel.grid"                 "panel.grid.major"          
+## [69] "panel.grid.minor"           "panel.grid.major.x"         "panel.grid.major.y"         "panel.grid.minor.x"        
+## [73] "panel.grid.minor.y"         "panel.ontop"                "plot.background"            "plot.title"                
+## [77] "plot.title.position"        "plot.subtitle"              "plot.caption"               "plot.caption.position"     
+## [81] "plot.tag"                   "plot.tag.position"          "plot.margin"                "strip.background"          
+## [85] "strip.background.x"         "strip.background.y"         "strip.placement"            "strip.text"                
+## [89] "strip.text.x"               "strip.text.y"               "strip.switch.pad.grid"      "strip.switch.pad.wrap"
+```
 ]
 
 ---
-count: false
- 
-# Legend position
-.panel1-legend_position-auto[
 
-```r
-p +
-* theme(legend.position = "top")
-```
-]
- 
-.panel2-legend_position-auto[
-&lt;img src="index_files/figure-html/legend_position_auto_02_output-1.svg" style="display: block; margin: auto;" /&gt;
-]
-
----
-count: false
- 
-# Legend position
-.panel1-legend_position-auto[
-
-```r
-p +
-  theme(legend.position = "top") +
-* theme(legend.position = "left")
-```
-]
- 
-.panel2-legend_position-auto[
-&lt;img src="index_files/figure-html/legend_position_auto_03_output-1.svg" style="display: block; margin: auto;" /&gt;
-]
-
----
-count: false
- 
-# Legend position
-.panel1-legend_position-auto[
-
-```r
-p +
-  theme(legend.position = "top") +
-  theme(legend.position = "left") +
-* theme(legend.position = "bottom")
-```
-]
- 
-.panel2-legend_position-auto[
-&lt;img src="index_files/figure-html/legend_position_auto_04_output-1.svg" style="display: block; margin: auto;" /&gt;
-]
-
-&lt;style&gt;
-.panel1-legend_position-auto {
-  color: black;
-  width: 38.6060606060606%;
-  hight: 32%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-.panel2-legend_position-auto {
-  color: black;
-  width: 59.3939393939394%;
-  hight: 32%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-.panel3-legend_position-auto {
-  color: black;
-  width: NA%;
-  hight: 33%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-&lt;/style&gt;
-
-
-
----
-
-# ggplot2 themes
+# Modify specific components of a theme
 
 - Many components can be modified with the `theme()` function. For example:
 
@@ -2977,6 +2914,104 @@ p +
 
 ---
 
+
+
+count: false
+ 
+# Legend position
+.panel1-legend_position-auto[
+
+```r
+*p 
+```
+]
+ 
+.panel2-legend_position-auto[
+&lt;img src="index_files/figure-html/legend_position_auto_01_output-1.svg" style="display: block; margin: auto;" /&gt;
+]
+
+---
+count: false
+ 
+# Legend position
+.panel1-legend_position-auto[
+
+```r
+p +
+* theme(legend.position = "top")
+```
+]
+ 
+.panel2-legend_position-auto[
+&lt;img src="index_files/figure-html/legend_position_auto_02_output-1.svg" style="display: block; margin: auto;" /&gt;
+]
+
+---
+count: false
+ 
+# Legend position
+.panel1-legend_position-auto[
+
+```r
+p +
+  theme(legend.position = "top") +
+* theme(legend.position = "left")
+```
+]
+ 
+.panel2-legend_position-auto[
+&lt;img src="index_files/figure-html/legend_position_auto_03_output-1.svg" style="display: block; margin: auto;" /&gt;
+]
+
+---
+count: false
+ 
+# Legend position
+.panel1-legend_position-auto[
+
+```r
+p +
+  theme(legend.position = "top") +
+  theme(legend.position = "left") +
+* theme(legend.position = "bottom")
+```
+]
+ 
+.panel2-legend_position-auto[
+&lt;img src="index_files/figure-html/legend_position_auto_04_output-1.svg" style="display: block; margin: auto;" /&gt;
+]
+
+&lt;style&gt;
+.panel1-legend_position-auto {
+  color: black;
+  width: 38.6060606060606%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-legend_position-auto {
+  color: black;
+  width: 59.3939393939394%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-legend_position-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+---
+
 class: inverse, center, middle
 
 &lt;center&gt;
@@ -3018,13 +3053,13 @@ library(patchwork)
 
 # Plot #1
 
-&lt;img src="index_files/figure-html/unnamed-chunk-41-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-43-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
 # Plot #2
 
-&lt;img src="index_files/figure-html/unnamed-chunk-42-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-44-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -3037,7 +3072,7 @@ Combining horizontally is done using the `+` operator.
 p1 + p2
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-43-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-45-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -3050,7 +3085,7 @@ Combining vertically is done using the `/` operator.
 p1 / p2
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-44-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-46-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -3061,7 +3096,7 @@ p1 / p2
 (p1 + p2) / p1
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-45-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-47-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -3269,7 +3304,7 @@ We can plot the geographic information contained in `germany` using the `st_geom
 plot(st_geometry(germany))
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-52-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-54-1.png" width="30%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -3346,7 +3381,7 @@ ggplot() +
 &lt;/small&gt;
 
 .pull-right[
-&lt;img src="index_files/figure-html/unnamed-chunk-54-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-56-1.png" width="70%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
