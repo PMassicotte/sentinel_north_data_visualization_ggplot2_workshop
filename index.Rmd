@@ -1595,6 +1595,22 @@ ggplot(
 
 ---
 
+# Setting color manually
+
+Some color resources to procrastinate on!
+
+- [The super fast color palettes generator!](https://coolors.co/)
+
+- [ColorSpace](https://mycolor.space/)
+
+- [Gradient Generator](https://colordesigner.io/gradient-generator)
+
+- [Color Palettes Color Schemes](https://www.color-hex.com/color-palettes/)
+
+- [Color Hunt](https://colorhunt.co/)
+
+---
+
 background-image: url(https://github.com/EmilHvitfeldt/paletteer/blob/master/man/figures/logo.png?raw=true)
 background-size: 90px
 background-position: 90% 8%
